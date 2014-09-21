@@ -65,26 +65,26 @@ class handlers:
 		if not os.path.isfile(self.filename):
 			self.on_compile_clicked('poof')
 		if self.language == 'java':
-			response = subprocess.call([self.language,self.filename],stdout=open('output','w'))
+			response = subprocess.call([self.language,self.filename],stdout=open('output','w'),stderr=open('output','w'))
 		elif self.language in interpreters:
 			self.interpret(interpreters[self.language][0],interpreters[self.language][1])
 		else:
-			response = subprocess.call('./' + self.filename,stdout=open('output','w'))
+			response = subprocess.call('./' + self.filename,stderr=open('output','w'),stdout=open('output','w'))
 		self.display()
 
 	def compile(self,command,extension):
 		code = self.retrieve_text(self.builder.get_object('code'))
 		open(self.filename + extension,'wb').write(code)
 		if command == 'javac':
-			response = subprocess.call([command,self.filename +extension],stdout=open('output','w'))
+			response = subprocess.call([command,self.filename +extension],stderr=open('output','w'),stdout=open('output','w'))
 		else:
-			response = subprocess.call([command,self.filename + extension ,'-o',self.filename],stdout=open('output','w'))
+			response = subprocess.call([command,self.filename + extension ,'-o',self.filename],stderr=open('output','w'),stdout=open('output','w'))
 		self.display()
 
 	def interpret(self,command,extension):
 		code = self.retrieve_text(self.builder.get_object('code'))
                 open(self.filename + extension,'w').write(code)
-		response = subprocess.call([command,self.filename + extension],stdout=open('output','w'))
+		response = subprocess.call([command,self.filename + extension],stderr=open('output','w'),stdout=open('output','w'))
 		self.display()
 
 	def retrieve_text(self,tv):
