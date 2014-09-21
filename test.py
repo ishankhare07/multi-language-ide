@@ -1,25 +1,24 @@
 from gi.repository import Gtk
 import subprocess,os,sys,thread,time
 
-language = 'c'
-
 compilers = {
-	'c' : 'gcc',
-	'c++' : 'g++',
-	'java' : 'javac'
+	'c' : ['gcc','.c'],
+	'c++' : ['g++','.cpp'],
+	'java' : ['javac','.java']
 }
 
 interpreters = {
-	'python' : 'python',
-	'ruby' : 'ruby',
-	'perl' : 'perl'
+	'python' : ['python','.py'],
+	'ruby' : ['ruby','.rb'],
+	'perl' : ['perl','.pl']
 }
 
 class handlers:
 	def __init__(self,b):
 		self.builder = b
-		self.filename = 'test'
-		global language,compilers,interpreters
+		self.filename = 'myfile'
+		self.language = 'c'
+		global compilers,interpreters
 
 	def on_delete(self,*args):
 		Gtk.main_quit(args)
@@ -44,31 +43,48 @@ class handlers:
 	def on_options_clicked(self,button):
 		thread.start_new_thread(self.toggle_bar,(self.builder.get_object('options'),))
 
-	def on_lang_c_toggled(self,button):
-		print 'lang c toggled' + button
-
-	def on_lang_cpp_activate(self,button):
-		print 'lang c activated'
+	def toggle_lang(self,widget):
+		if widget.get_active():
+			if Gtk.Buildable.get_name(widget) == 'lang_c' : self.language = 'c'
+			elif Gtk.Buildable.get_name(widget) == 'lang_cpp' : self.language = 'c++'
+			elif Gtk.Buildable.get_name(widget) == 'lang_java' : self.language = 'java'
+			elif Gtk.Buildable.get_name(widget) == 'lang_py' : self.language = 'python'
+			elif Gtk.Buildable.get_name(widget) == 'lang_ruby' : self.language = 'ruby'
+			elif Gtk.Buildable.get_name(widget) == 'lang_perl' : self.language = 'perl'
 
 	def on_compile_clicked(self,button):
-		lang = language
+		lang = self.language
 		if lang in compilers:
-			self.compile(compilers[lang],'test')
+			self.compile(compilers[lang][0],compilers[lang][1])
 		elif lang in interpreters:
-			self.interpret(interpreter[lang],'test')
+			self.interpret(interpreters[lang][0],interpreters[lang][1])
 		else:
 			print 'language not supported'
 
 	def on_run_clicked(self,button):
 		if not os.path.isfile(self.filename):
 			self.on_compile_clicked('poof')
-		response = subprocess.call('./' + self.filename,stdout=open('output','w'))
+		if self.language == 'java':
+			response = subprocess.call([self.language,self.filename],stdout=open('output','w'))
+		elif self.language in interpreters:
+			self.interpret(interpreters[self.language][0],interpreters[self.language][1])
+		else:
+			response = subprocess.call('./' + self.filename,stdout=open('output','w'))
 		self.display()
 
-	def compile(self,lang,filename):
+	def compile(self,command,extension):
 		code = self.retrieve_text(self.builder.get_object('code'))
-		open(self.filename + '.c','wb').write(code)
-		response = subprocess.call([lang,self.filename + '.c','-o',self.filename],stdout=open('output','w'))
+		open(self.filename + extension,'wb').write(code)
+		if command == 'javac':
+			response = subprocess.call([command,self.filename +extension],stdout=open('output','w'))
+		else:
+			response = subprocess.call([command,self.filename + extension ,'-o',self.filename],stdout=open('output','w'))
+		self.display()
+
+	def interpret(self,command,extension):
+		code = self.retrieve_text(self.builder.get_object('code'))
+                open(self.filename + extension,'w').write(code)
+		response = subprocess.call([command,self.filename + extension],stdout=open('output','w'))
 		self.display()
 
 	def retrieve_text(self,tv):
