@@ -128,9 +128,6 @@
                 <property name="position">5</property>
               </packing>
             </child>
-            <child>
-              <placeholder/>
-            </child>
           </object>
           <packing>
             <property name="resize">False</property>
@@ -165,19 +162,6 @@
                         <property name="position">0</property>
                       </packing>
                     </child>
-                    <child>
-                      <object class="GtkLabel" id="label1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Our question goes here</property>
-                        <property name="angle">0.01</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -187,18 +171,27 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkTextView" id="question_display">
+                  <object class="GtkScrolledWindow" id="scrolledwindow2">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="editable">False</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="cursor_visible">False</property>
+                    <property name="shadow_type">in</property>
+                    <property name="min_content_height">5</property>
+                    <child>
+                      <object class="GtkTextView" id="code">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="pixels_above_lines">2</property>
+                        <property name="wrap_mode">word</property>
+                        <property name="left_margin">3</property>
+                        <property name="right_margin">3</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="padding">7</property>
-                    <property name="position">2</property>
+                    <property name="padding">5</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -207,36 +200,14 @@
                     <property name="can_focus">True</property>
                     <property name="shadow_type">in</property>
                     <child>
-                      <object class="GtkTextView" id="code">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="hscroll_policy">natural</property>
-                        <property name="vscroll_policy">natural</property>
-                        <property name="pixels_above_lines">3</property>
-                        <property name="pixels_below_lines">3</property>
-                        <property name="pixels_inside_wrap">3</property>
-                        <property name="left_margin">5</property>
-                        <property name="right_margin">5</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="padding">13</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScrolledWindow" id="scrolledwindow2">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="shadow_type">in</property>
-                    <child>
                       <object class="GtkTextView" id="output">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="pixels_above_lines">2</property>
                         <property name="editable">False</property>
+                        <property name="wrap_mode">word</property>
+                        <property name="left_margin">3</property>
+                        <property name="right_margin">3</property>
                         <property name="cursor_visible">False</property>
                       </object>
                     </child>
@@ -244,7 +215,8 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="position">3</property>
+                    <property name="padding">2</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -265,12 +237,13 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="relief">half</property>
+                    <property name="yalign">0.47999998927116394</property>
                     <signal name="clicked" handler="on_compile_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="padding">3</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -285,7 +258,6 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="padding">3</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -293,7 +265,6 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">7</property>
                 <property name="position">1</property>
               </packing>
             </child>
