@@ -1,4 +1,4 @@
-from gi.repository import Gtk
+from gi.repository import Gtk, GtkSource, GObject
 import subprocess,os,sys,thread,time
 
 compilers = {
@@ -18,6 +18,11 @@ class handlers:
 		self.builder = b
 		self.filename = 'myfile'
 		self.language = 'c'
+
+		self.buffer = self.builder.get_object('code').get_buffer()
+		self.lang_manager = GtkSource.LanguageManager()
+		self.buffer.set_language(self.lang_manager.get_language('c'))
+
 		global compilers,interpreters
 
 	def on_delete(self,*args):
@@ -45,12 +50,24 @@ class handlers:
 
 	def toggle_lang(self,widget):
 		if widget.get_active():
-			if Gtk.Buildable.get_name(widget) == 'lang_c' : self.language = 'c'
-			elif Gtk.Buildable.get_name(widget) == 'lang_cpp' : self.language = 'c++'
-			elif Gtk.Buildable.get_name(widget) == 'lang_java' : self.language = 'java'
-			elif Gtk.Buildable.get_name(widget) == 'lang_py' : self.language = 'python'
-			elif Gtk.Buildable.get_name(widget) == 'lang_ruby' : self.language = 'ruby'
-			elif Gtk.Buildable.get_name(widget) == 'lang_perl' : self.language = 'perl'
+			if Gtk.Buildable.get_name(widget) == 'lang_c' :
+				self.language = 'c'
+				self.buffer.set_language(self.lang_manager.get_language('c'))
+			elif Gtk.Buildable.get_name(widget) == 'lang_cpp' :
+				self.language = 'c++'
+                                self.buffer.set_language(self.lang_manager.get_language('c++'))
+			elif Gtk.Buildable.get_name(widget) == 'lang_java' :
+				self.language = 'java'
+                                self.buffer.set_language(self.lang_manager.get_language('java'))
+			elif Gtk.Buildable.get_name(widget) == 'lang_py' :
+				self.language = 'python'
+                                self.buffer.set_language(self.lang_manager.get_language('python'))
+			elif Gtk.Buildable.get_name(widget) == 'lang_ruby' :
+				self.language = 'ruby'
+                                self.buffer.set_language(self.lang_manager.get_language('ruby'))
+			elif Gtk.Buildable.get_name(widget) == 'lang_perl' :
+				self.language = 'perl'
+                                self.buffer.set_language(self.lang_manager.get_language('perl'))
 
 	def on_run_clicked(self,button):
 		if not os.path.isfile(self.filename) and self.language in compilers:
@@ -106,6 +123,7 @@ class handlers:
 		buffer.set_text(text + new_text)
 
 builder = Gtk.Builder()
+GObject.type_register(GtkSource.View)
 builder.add_from_file('test.glade')
 builder.connect_signals(handlers(builder))
 window = builder.get_object('window1')

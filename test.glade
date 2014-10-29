@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
+<!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.8"/>
+  <requires lib="gtksourceview" version="3.0"/>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
     <property name="default_width">500</property>
@@ -177,13 +178,14 @@
                     <property name="shadow_type">in</property>
                     <property name="min_content_height">5</property>
                     <child>
-                      <object class="GtkTextView" id="code">
+                      <object class="GtkSourceView" id="code">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="pixels_above_lines">2</property>
-                        <property name="wrap_mode">word</property>
-                        <property name="left_margin">3</property>
-                        <property name="right_margin">3</property>
+                        <property name="left_margin">2</property>
+                        <property name="right_margin">2</property>
+                        <property name="show_line_numbers">True</property>
+                        <property name="auto_indent">True</property>
+                        <property name="highlight_current_line">True</property>
                       </object>
                     </child>
                   </object>
