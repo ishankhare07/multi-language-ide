@@ -54,7 +54,7 @@ class handlers:
 				self.language = 'c'
 				self.buffer.set_language(self.lang_manager.get_language('c'))
 			elif Gtk.Buildable.get_name(widget) == 'lang_cpp' :
-				self.language = 'c++'
+				self.language = 'cpp'
                                 self.buffer.set_language(self.lang_manager.get_language('c++'))
 			elif Gtk.Buildable.get_name(widget) == 'lang_java' :
 				self.language = 'java'
@@ -97,6 +97,7 @@ class handlers:
 		code = self.retrieve_text(self.builder.get_object('code'))
 		open(self.filename + extension,'wb').write(code)
 		if command == 'javac':
+			print command,self.filename+extension
 			response = subprocess.call([command,self.filename +extension],stderr=open('output','w'),stdout=open('output','w'))
 		else:
 			response = subprocess.call([command,self.filename + extension ,'-o',self.filename],stderr=open('output','w'),stdout=open('output','w'))
