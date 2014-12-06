@@ -3,7 +3,7 @@ import subprocess,os,sys,thread,time
 
 compilers = {
 	'c' : ['gcc','.c'],
-	'c++' : ['g++','.cpp'],
+	'cpp' : ['g++','.cpp'],
 	'java' : ['javac','.java']
 }
 
@@ -55,7 +55,7 @@ class handlers:
 				self.buffer.set_language(self.lang_manager.get_language('c'))
 			elif Gtk.Buildable.get_name(widget) == 'lang_cpp' :
 				self.language = 'cpp'
-                                self.buffer.set_language(self.lang_manager.get_language('c++'))
+                                self.buffer.set_language(self.lang_manager.get_language('cpp'))
 			elif Gtk.Buildable.get_name(widget) == 'lang_java' :
 				self.language = 'java'
                                 self.buffer.set_language(self.lang_manager.get_language('java'))
@@ -101,7 +101,6 @@ class handlers:
 			response = subprocess.call([command,self.filename +extension],stderr=open('output','w'),stdout=open('output','w'))
 		else:
 			response = subprocess.call([command,self.filename + extension ,'-o',self.filename],stderr=open('output','w'),stdout=open('output','w'))
-		self.display()
 
 	def interpret(self,command,extension):
 		print 'interpret called'
