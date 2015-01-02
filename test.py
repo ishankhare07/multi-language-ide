@@ -70,7 +70,8 @@ class handlers:
                                 self.buffer.set_language(self.lang_manager.get_language('perl'))
 
 	def on_run_clicked(self,button):
-		if not os.path.isfile(self.filename) and self.language in compilers:
+		if not (os.path.isfile(self.filename)) or self.language in compilers:
+			print 'calling on_compile_clicked'
 			self.on_compile_clicked('poof')
 		if self.language == 'java':
 			response = subprocess.call([self.language,self.filename],stdout=open('output','w'),stderr=open('output','w'))
@@ -95,12 +96,17 @@ class handlers:
 
 	def compile(self,command,extension):
 		code = self.retrieve_text(self.builder.get_object('code'))
-		open(self.filename + extension,'wb').write(code)
+		myfile = open(self.filename + extension,'w')
+		myfile.write(code)
+		myfile.close()
+		output = open('output','w')
 		if command == 'javac':
 			print command,self.filename+extension
-			response = subprocess.call([command,self.filename +extension],stderr=open('output','w'),stdout=open('output','w'))
+			response = subprocess.call([command,self.filename +extension],stderr=output,stdout=output)
 		else:
-			response = subprocess.call([command,self.filename + extension ,'-o',self.filename],stderr=open('output','w'),stdout=open('output','w'))
+			response = subprocess.call([command,self.filename + extension ,'-o',self.filename],stderr=output,stdout=output)
+		output.close()
+		self.display()
 
 	def interpret(self,command,extension):
 		print 'interpret called'
