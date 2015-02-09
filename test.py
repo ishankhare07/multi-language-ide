@@ -18,7 +18,11 @@ class handlers:
 		self.builder = b
 		self.filename = 'myfile'
 		self.language = 'c'
-
+		'''
+			replacing Gtk.TextBuffer with GtkSource.Buffer to avoid the error on self.buffer.set_language
+			currently open bug at https://bugzilla.gnome.org/show_bug.cgi?id=643732
+		'''
+		self.builder.get_object('code').set_buffer(GtkSource.Buffer())
 		self.buffer = self.builder.get_object('code').get_buffer()
 		self.lang_manager = GtkSource.LanguageManager()
 		self.buffer.set_language(self.lang_manager.get_language('c'))
