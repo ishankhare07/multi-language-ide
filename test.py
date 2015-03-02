@@ -59,32 +59,32 @@ class handlers:
 				self.buffer.set_language(self.lang_manager.get_language('c'))
 			elif Gtk.Buildable.get_name(widget) == 'lang_cpp' :
 				self.language = 'cpp'
-                                self.buffer.set_language(self.lang_manager.get_language('cpp'))
+				self.buffer.set_language(self.lang_manager.get_language('cpp'))
 			elif Gtk.Buildable.get_name(widget) == 'lang_java' :
 				self.language = 'java'
-                                self.buffer.set_language(self.lang_manager.get_language('java'))
+				self.buffer.set_language(self.lang_manager.get_language('java'))
 			elif Gtk.Buildable.get_name(widget) == 'lang_py' :
 				self.language = 'python'
-                                self.buffer.set_language(self.lang_manager.get_language('python'))
+				self.buffer.set_language(self.lang_manager.get_language('python'))
 			elif Gtk.Buildable.get_name(widget) == 'lang_ruby' :
 				self.language = 'ruby'
-                                self.buffer.set_language(self.lang_manager.get_language('ruby'))
+				self.buffer.set_language(self.lang_manager.get_language('ruby'))
 			elif Gtk.Buildable.get_name(widget) == 'lang_perl' :
 				self.language = 'perl'
-                                self.buffer.set_language(self.lang_manager.get_language('perl'))
+				self.buffer.set_language(self.lang_manager.get_language('perl'))
 
 	def on_run_clicked(self,button):
 		if not (os.path.isfile(self.filename)) or self.language in compilers:
-			print 'calling on_compile_clicked'
+			print('calling on_compile_clicked')
 			self.on_compile_clicked('poof')
 		if self.language == 'java':
 			response = subprocess.call([self.language,self.filename],stdout=open('output','w'),stderr=open('output','w'))
 			self.display()
 		elif self.language in interpreters:
-			print 'calling interpret from run'
+			print('calling interpret from run')
 			self.interpret(interpreters[self.language][0],interpreters[self.language][1])
 		else:
-			print 'executing'
+			print('executing')
 			response = subprocess.call('./' + self.filename,stderr=open('output','w'),stdout=open('output','w'))
 			self.display()
 
@@ -93,10 +93,10 @@ class handlers:
 		if self.language in compilers:
 			self.compile(compilers[self.language][0],compilers[self.language][1])
 		elif self.language in interpreters:
-			print 'calling interpret from compile'
+			print('calling interpret from compile')
 			self.interpret(interpreters[self.language][0],interpreters[self.language][1])
 		else:
-			print 'language not supported'
+			print('language not supported')
 
 	def compile(self,command,extension):
 		code = self.retrieve_text(self.builder.get_object('code'))
@@ -105,7 +105,7 @@ class handlers:
 		myfile.close()
 		output = open('output','w')
 		if command == 'javac':
-			print command,self.filename+extension
+			print(command,self.filename+extension)
 			response = subprocess.call([command,self.filename +extension],stderr=output,stdout=output)
 		else:
 			response = subprocess.call([command,self.filename + extension ,'-o',self.filename],stderr=output,stdout=output)
@@ -113,9 +113,9 @@ class handlers:
 		self.display()
 
 	def interpret(self,command,extension):
-		print 'interpret called'
+		print('interpret called')
 		code = self.retrieve_text(self.builder.get_object('code'))
-                open(self.filename + extension,'w').write(code)
+		open(self.filename + extension,'w').write(code)
 		response = subprocess.call([command,self.filename + extension],stderr=open('output','w'),stdout=open('output','w'))
 		self.display()
 
@@ -125,7 +125,7 @@ class handlers:
 		return text
 
 	def display(self):
-		print 'executing display'
+		print('executing display')
 		tv = self.builder.get_object('output')
 		buffer = tv.get_buffer()
 		text = self.retrieve_text(tv)
