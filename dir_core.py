@@ -2,6 +2,7 @@ import sys
 import os
 
 class Directory:
+    files = []
     def __init__(self, parent=None, indent=0):
         if parent == None:
             self.parent = os.getcwd()
@@ -13,8 +14,10 @@ class Directory:
             if os.path.isfile(self.parent + '/' + node):
                 #print('path : ' + self.parent)
                 print("\t" * self.indent + "file " + node)
+                Directory.files.append(['file',node])
             else:
                 #print('path : ' + self.parent)
                 print("\t" * self.indent + "dir " + node)
+                Directory.files.append(['dir', node])
                 #if not node == "__pycache__":
                 Directory(parent=self.parent + '/' + node, indent=self.indent+1)
