@@ -2,24 +2,24 @@ import sys
 import os
 
 class Directory:
-        """
-            directory to scan can be provided as a string
-            example:
-                Directory('/home/<user>/Desktop')
-            or None to scan the current working directory
-            example:
-                Directory()
-                is equivalent to:
-                Directory(None)
-            effect:
-                creates a 'childs' attribute(self.childs), which can be accessed by
-                dir = Directory()
-                dir.childs
-            childs:
-                a nested dictionary containing the 
-                    files -> with their name as keys and 'file' as value
-                    directories -> as keys of nested dictionaries
-        """
+    """
+        directory to scan can be provided as a string
+        example:
+            Directory('/home/<user>/Desktop')
+        or None to scan the current working directory
+        example:
+            Directory()
+            is equivalent to:
+            Directory(None)
+        effect:
+            creates a 'childs' attribute(self.childs), which can be accessed by
+            dir = Directory()
+            dir.childs
+        childs:
+            a nested dictionary containing the 
+                files -> with their name as keys and 'file' as value
+                directories -> as keys of nested dictionaries
+    """
 
     def __init__(self, parent=None, indent=0):
         self.childs = {}
