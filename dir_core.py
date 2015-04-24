@@ -2,7 +2,6 @@ import sys
 import os
 
 class Directory:
-    def __init__(self, parent=None, indent=0):
         """
             directory to scan can be provided as a string
             example:
@@ -22,6 +21,7 @@ class Directory:
                     directories -> as keys of nested dictionaries
         """
 
+    def __init__(self, parent=None, indent=0):
         self.childs = {}
         if parent == None:
             self.parent = os.getcwd()
