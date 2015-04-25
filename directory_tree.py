@@ -14,9 +14,11 @@ class Tree:
 
         for key, value in dir_tree.items():
             if isinstance(value, dict):                         #is a directory
-                parent = self.treestore.append(None,[key])      #append directory to tree and store back treeiter
+                print('found parent')
+                parent = self.treestore.append(parent,[key])    #append directory to tree and store back treeiter
                 self.parse_tree(value, parent)                  #hence recurese into that directory
             else:                                               #is a file
+                print('found child')
                 if parent == None:                              #file on root level
                     self.treestore.append(None, [key])          #append it as it is(on root level)
                 else:
