@@ -2,10 +2,6 @@ from gi.repository import Gtk
 
 class Main:
     def __init__(self, builder):
-        """
-            something goes here
-        """
-
         self.builder = builder
 
     def on_destroy(self, *args):
