@@ -1,5 +1,5 @@
 from gi.repository import Gtk
-import dir_core
+from core import dir_core
 
 class Tree:
     def __init__(self, directory=None):
