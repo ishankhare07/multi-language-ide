@@ -36,6 +36,6 @@ class Tree:
 
         crt = Gtk.CellRendererText()                            #create text-cell-renderer for treeview
         tvc.pack_start(crt, True)                               #pack cell renderer into that particular treeviewcolumn
-        tvc.add_attribute(crt, "text", 0)                        #get text attribute of 1st column(0th index) from the model
+        tvc.add_attribute(crt, "text", 0)                       #get text attribute of 1st column(0th index) from the model
 
         return self.treeview
