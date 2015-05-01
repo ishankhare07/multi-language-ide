@@ -4,21 +4,48 @@ from gui.bind import directory_tree
 
 GObject.type_register(GtkSource.View)
 
-class Main(core.Compile, core.Language):
-    def __init__(self, builder):
-        core.Compile.__init__(self)
-        core.Language.__init__(self,'c')
-        self.builder = builder
-        self.filename = ""
+class Tabs(core.Language):
+    """
+        handles the addition and deletion of tabs in the notebook
+    """
+
+    def __init__(self):
+        """
+            some stuff
+        :return:
+        """
+        core.Language.__init__(self, 'c')
+
+        self.code = GtkSource.View()
+        self.input = Gtk.TextView()
+        self.output = Gtk.TextView()
+
+        # replace GtkSource buffer
+        # and add customization
+        self.custom_buffer()
+
+    def custom_buffer(self):
         """
             replacing Gtk.TextBuffer with GtkSource.Buffer to avoid the error on self.buffer.set_language
             currently open bug at https://bugzilla.gnome.org/show_bug.cgi?id=643732
         """
-        self.builder.get_object('code').set_buffer(GtkSource.Buffer())
-        self.buffer = self.builder.get_object('code').get_buffer()
-        self.buffer.set_language(self.get_language('c'))
+        self.code.set_buffer(GtkSource.Buffer)
+        self.code.set_auto_indent(True)
+        self.code.set_highlight_current_line(True)
+        self.code.set_indent_on_tab(True)
+        self.code.set_indent_width(4)
+        self.code.set_insert_spaces_instead_of_tabs(True)
+        self.code.set_show_line_numbers(True)
 
-        #initialize the directory tree on cwd
+
+class Main(core.Compile, Gtk.Notebook):
+    def __init__(self, builder):
+        core.Compile.__init__(self)
+        Gtk.Notebook.__init__(self)
+        self.builder = builder
+        self.filename = ""
+
+        # initialize the directory tree on cwd
         file_container = self.builder.get_object('files')
         dir_tree = directory_tree.Tree()
         treeview = dir_tree.create_tree_view()
