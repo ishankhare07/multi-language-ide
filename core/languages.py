@@ -2,6 +2,7 @@ from gi.repository import Gtk, GtkSource, GObject
 
 GObject.type_register(GtkSource.View)
 
+
 class Language(GtkSource.LanguageManager):
     compilers = {
         'c': ['gcc', '.c'],
@@ -10,10 +11,10 @@ class Language(GtkSource.LanguageManager):
     }
 
     interpreters = {
-        'python' : ['python','.py'],
-        'python3' : ['python3', '.py'],
-        'ruby' : ['ruby','.rb'],
-        'perl' : ['perl','.pl']
+        'python': ['python', '.py'],
+        'python3': ['python3', '.py'],
+        'ruby': ['ruby', '.rb'],
+        'perl': ['perl', '.pl']
     }
 
     def __init__(self, language):
