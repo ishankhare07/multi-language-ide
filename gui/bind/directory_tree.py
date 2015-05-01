@@ -2,6 +2,9 @@ from gi.repository import Gtk
 from core import dir_core
 
 class Tree:
+    """
+        creates the TreeView to be attached into the gui
+    """
     def __init__(self, directory=None):
         self.dir_tree = dir_core.Directory(directory).childs
         self.treestore = Gtk.TreeStore(str)
