@@ -3,7 +3,7 @@ from gi.repository import Gtk, GtkSource, GObject
 GObject.type_register(GtkSource.View)
 
 
-class Language(GtkSource.LanguageManager):
+class Language:
     compilers = {
         'c': ['gcc', '.c'],
         'cpp': ['g++', '.cpp'],
@@ -17,10 +17,8 @@ class Language(GtkSource.LanguageManager):
         'perl': ['perl', '.pl']
     }
 
-    def __init__(self, language):
-        GtkSource.LanguageManager.__init__(self)
-        self.language = language
+    def __init__(self):
+        self.lm = GtkSource.LanguageManager()
 
-    def change_lanugage(self, name):
-        self.language = name
-        self.buffer.set_language(self.get_language(name))
+    def change_language(self, name, sourceview):
+        sourceview.get_buffer().set_language(self.lm.get_language(name))
