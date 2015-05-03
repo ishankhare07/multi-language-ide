@@ -15,8 +15,7 @@ class Tabs(core.Language):
             some stuff
         :return:
         """
-        core.Language.__init__(self, 'c')
-
+        core.Language.__init__(self)
         self.code = GtkSource.View()
         self.input = Gtk.TextView()
         self.output = Gtk.TextView()
@@ -39,7 +38,7 @@ class Tabs(core.Language):
             replacing Gtk.TextBuffer with GtkSource.Buffer to avoid the error on self.buffer.set_language
             currently open bug at https://bugzilla.gnome.org/show_bug.cgi?id=643732
         """
-        #self.code.set_buffer(GtkSource.Buffer)
+        self.code.set_buffer(GtkSource.Buffer())
 
         # expanding widgets
         for widget in [self.code, self.input, self.output]:
@@ -71,15 +70,20 @@ class Tabs(core.Language):
         return grid
 
 
-class Main(core.Compile):
+class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
     def __init__(self, builder):
         core.Compile.__init__(self)
+        header.Header.__init__(self)
+        core.Language.__init__(self)
+        Gtk.Notebook.__init__(self)
         self.notebook = Gtk.Notebook()
+        self.header = header.Header()
         self.builder = builder
         self.filename = ""
 
         # attach language selector combobox
-        self.builder.get_object('box3').pack_start(header.Header().widget, True, True, 0)
+        self.builder.get_object('box3').pack_start(self.header.combobox, True, False, 0)
+        self.header.combobox.connect('changed', self.trigger_language_update)
 
         # add notebook to window()
         self.builder.get_object('notebook_holder').pack_end(self.notebook, True, True, 0)
@@ -92,6 +96,19 @@ class Main(core.Compile):
         dir_tree = directory_tree.Tree()
         treeview = dir_tree.create_tree_view()
         file_container.pack_start(treeview, True, True, 0)
+
+    def trigger_language_update(self, combobox):
+        index = combobox.get_active()
+        model = combobox.get_model()
+        lang = model[index][0]
+        print(lang)
+
+        page_num = self.notebook.get_current_page()
+        grid = self.notebook.get_nth_page(page_num)
+        # get scrolledwindow at 0,0 and then get sourceview from inside it
+        sourceview = grid.get_child_at(0, 0).get_child()
+        self.change_language(lang, sourceview)
+
 
     def on_destroy(self, *args):
         Gtk.main_quit(*args)
