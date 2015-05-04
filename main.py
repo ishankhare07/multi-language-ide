@@ -5,17 +5,18 @@ from gui.bind import directory_tree, header
 GObject.type_register(GtkSource.View)
 
 
-class Tabs(core.Language):
+class Tabs:
     """
         handles the addition and deletion of tabs in the notebook
     """
+
+    page_count = 0
 
     def __init__(self):
         """
             some stuff
         :return:
         """
-        core.Language.__init__(self)
         self.code = GtkSource.View()
         self.input = Gtk.TextView()
         self.output = Gtk.TextView()
@@ -23,6 +24,7 @@ class Tabs(core.Language):
         # replace GtkSource buffer
         # and add customization
         self.custom_buffer()
+        Tabs.page_count += 1
 
     def set_expand(self, widget):
         widget.set_hexpand(True)
@@ -69,6 +71,22 @@ class Tabs(core.Language):
         grid.attach(self.wrap_scrolled(self.output), 1, 3, 1, 2)
         return grid
 
+    def get_label_widget(self):
+        box = Gtk.HBox()
+        label = Gtk.Label("Page" + str(Tabs.page_count))
+        close_button = Gtk.Button()
+        close_icon = Gtk.Image()
+        # set icon type, size
+        close_icon.set_from_stock('gtk-close', 2)
+        close_button.set_image(close_icon)
+        close_button.set_relief(Gtk.ReliefStyle.NONE)
+
+        # pack everything into box
+        box.pack_start(label, True, True, 0)
+        box.pack_start(close_button, True, True, 0)
+
+        return box
+
 
 class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
     def __init__(self, builder):
@@ -89,13 +107,28 @@ class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
         self.builder.get_object('notebook_holder').pack_end(self.notebook, True, True, 0)
 
         # add first tab
-        self.notebook.append_page(Tabs().get_packed(), None)
+        self.notebook.append_page(*self.create_tab())
 
         # initialize the directory tree on cwd
         file_container = self.builder.get_object('files')
         dir_tree = directory_tree.Tree()
         treeview = dir_tree.create_tree_view()
         file_container.pack_start(treeview, True, True, 0)
+
+    def create_tab(self):
+        tab = Tabs()
+        packed = tab.get_packed()
+        label_widget = tab.get_label_widget()
+
+        # connect label_widget's close button to close_tab()
+        label_widget.get_children()[-1].connect('clicked', self.close_tab)
+        label_widget.show_all()
+
+        return packed, label_widget
+
+    def close_tab(self, widget):
+        page_num = self.notebook.get_current_page()
+        self.notebook.remove_page(page_num)
 
     def trigger_language_update(self, combobox):
         index = combobox.get_active()
@@ -109,6 +142,10 @@ class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
         sourceview = grid.get_child_at(0, 0).get_child()
         self.change_language(lang, sourceview)
 
+    def new_tab(self, widget):
+        print('new tab added')
+        self.notebook.append_page(*self.create_tab())
+        self.notebook.show_all()
 
     def on_destroy(self, *args):
         Gtk.main_quit(*args)
