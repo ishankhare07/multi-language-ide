@@ -18,6 +18,7 @@ class Tabs:
         :return:
         """
         self.code = GtkSource.View()
+        self.code.language = 'c'
         self.input = Gtk.TextView()
         self.output = Gtk.TextView()
 
@@ -87,6 +88,15 @@ class Tabs:
 
         return box
 
+class TabStore:
+    """
+        stores the language information for each tab
+    """
+    def __init__(self):
+        self.info = {}
+
+    def add_info(self, tab_index, language_info):
+        self.info[tab_index] = language_info
 
 class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
     def __init__(self, builder):
@@ -96,6 +106,7 @@ class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
         Gtk.Notebook.__init__(self)
         self.notebook = Gtk.Notebook()
         self.header = header.Header()
+        self.store = TabStore()
         self.builder = builder
         self.filename = ""
 
@@ -106,6 +117,9 @@ class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
         # add notebook to window()
         self.builder.get_object('notebook_holder').pack_end(self.notebook, True, True, 0)
 
+        # hear for page-switch
+        self.notebook.connect('switch-page', self.page_changed)
+
         # add first tab
         self.notebook.append_page(*self.create_tab())
 
@@ -114,6 +128,14 @@ class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
         dir_tree = directory_tree.Tree()
         treeview = dir_tree.create_tree_view()
         file_container.pack_start(treeview, True, True, 0)
+
+    def page_changed(self, widget, page, page_num):
+        # page_num1 = self.notebook.get_current_page()
+        grid = self.notebook.get_nth_page(page_num)
+        sourceview = grid.get_child_at(0, 0).get_child()
+        lang = core.Language.get_language_index(sourceview.language)
+        self.header.update_lang(lang)
+
 
     def create_tab(self):
         tab = Tabs()
@@ -134,13 +156,14 @@ class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
         index = combobox.get_active()
         model = combobox.get_model()
         lang = model[index][0]
-        print(lang)
+        print("trigger =>", lang)
 
         page_num = self.notebook.get_current_page()
         grid = self.notebook.get_nth_page(page_num)
         # get scrolledwindow at 0,0 and then get sourceview from inside it
         sourceview = grid.get_child_at(0, 0).get_child()
         self.change_language(lang, sourceview)
+        # self.store.add_info(page_num, lang)
 
     def new_tab(self, widget):
         print('new tab added')
