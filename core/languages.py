@@ -22,3 +22,4 @@ class Language:
 
     def change_language(self, name, sourceview):
         sourceview.get_buffer().set_language(self.lm.get_language(name))
+        sourceview.language = name
