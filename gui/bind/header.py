@@ -8,10 +8,16 @@ class Header:
             creates the combobox to be used in header
         """
         self.liststore = Gtk.ListStore(str)
-        for lang in GtkSource.LanguageManager().get_language_ids():
+        lang_ids = GtkSource.LanguageManager().get_language_ids()
+        lang_ids.sort()
+        for lang in lang_ids:
             self.liststore.append([lang])
         self.combobox = Gtk.ComboBox()
         self.combobox.set_model(self.liststore)
         crt = Gtk.CellRendererText()
         self.combobox.pack_start(crt, True)
         self.combobox.add_attribute(crt, "text", 0)
+
+    def update_lang(self, language):
+        print("language => ", language)
+        self.combobox.set_active(language)
