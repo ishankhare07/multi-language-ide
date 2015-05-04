@@ -61,6 +61,7 @@ THE SOFTWARE.
                 <property name="receives_default">True</property>
                 <property name="image">new_image</property>
                 <property name="always_show_image">True</property>
+                <signal name="clicked" handler="new_tab" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -143,7 +144,6 @@ THE SOFTWARE.
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <signal name="clicked" handler="on_options_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -181,7 +181,6 @@ THE SOFTWARE.
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="yalign">0.47999998927116394</property>
-                        <signal name="clicked" handler="on_compile_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -195,7 +194,6 @@ THE SOFTWARE.
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_run_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
