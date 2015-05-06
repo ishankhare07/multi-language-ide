@@ -1,11 +1,11 @@
 from gi.repository import Gtk, GtkSource, GObject
 import core
-from gui.bind import directory_tree, header
+from gui.bind import directory_tree, footer
 
 GObject.type_register(GtkSource.View)
 
 
-class Tabs:
+class Tabs(footer.Footer):
     """
         handles the addition and deletion of tabs in the notebook
     """
@@ -17,10 +17,12 @@ class Tabs:
             some stuff
         :return:
         """
+        footer.Footer.__init__(self)
         self.code = GtkSource.View()
         self.code.language = 'c'
         self.input = Gtk.TextView()
         self.output = Gtk.TextView()
+        self.language = self.combobox
 
         # replace GtkSource buffer
         # and add customization
@@ -70,6 +72,9 @@ class Tabs:
         # attach input and output textviews
         grid.attach(self.wrap_scrolled(self.input), 0, 3, 1, 2)
         grid.attach(self.wrap_scrolled(self.output), 1, 3, 1, 2)
+
+        #attach combobox language selector
+        grid.attach(self.language, 1, 5, 1, 1)
         return grid
 
     def get_label_widget(self):
@@ -88,31 +93,15 @@ class Tabs:
 
         return box
 
-class TabStore:
-    """
-        stores the language information for each tab
-    """
-    def __init__(self):
-        self.info = {}
-
-    def add_info(self, tab_index, language_info):
-        self.info[tab_index] = language_info
-
-class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
+class Main(core.Compile, Gtk.Notebook, core.Language):
     def __init__(self, builder):
         core.Compile.__init__(self)
-        header.Header.__init__(self)
         core.Language.__init__(self)
         Gtk.Notebook.__init__(self)
         self.notebook = Gtk.Notebook()
-        self.header = header.Header()
-        self.store = TabStore()
+        self.footer = footer.Footer()
         self.builder = builder
         self.filename = ""
-
-        # attach language selector combobox
-        self.builder.get_object('box3').pack_start(self.header.combobox, True, False, 0)
-        self.header.combobox.connect('changed', self.trigger_language_update)
 
         # add notebook to window()
         self.builder.get_object('notebook_holder').pack_end(self.notebook, True, True, 0)
@@ -134,7 +123,6 @@ class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
         grid = self.notebook.get_nth_page(page_num)
         sourceview = grid.get_child_at(0, 0).get_child()
         lang = core.Language.get_language_index(sourceview.language)
-        self.header.update_lang(lang)
 
 
     def create_tab(self):
@@ -163,7 +151,6 @@ class Main(core.Compile, header.Header, Gtk.Notebook, core.Language):
         # get scrolledwindow at 0,0 and then get sourceview from inside it
         sourceview = grid.get_child_at(0, 0).get_child()
         self.change_language(lang, sourceview)
-        # self.store.add_info(page_num, lang)
 
     def new_tab(self, widget):
         print('new tab added')
