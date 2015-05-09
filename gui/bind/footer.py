@@ -17,7 +17,3 @@ class Footer:
         crt = Gtk.CellRendererText()
         self.combobox.pack_start(crt, True)
         self.combobox.add_attribute(crt, "text", 0)
-
-    def update_lang(self, language):
-        print("language => ", language)
-        self.combobox.set_active(language)
