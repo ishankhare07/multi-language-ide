@@ -29,9 +29,9 @@ class Language:
         """
         name = Language.get_language_name(combobox)
         sourceview.get_buffer().set_language(self.lm.get_language(name))
-        print("previous language =>", sourceview.language)
+        # print("previous language =>", sourceview.language)
         sourceview.language = name
-        print("current language =>", sourceview.language)
+        # print("current language =>", sourceview.language)
 
     @staticmethod
     def get_language_name(combobox):
