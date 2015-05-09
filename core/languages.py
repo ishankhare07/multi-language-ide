@@ -20,15 +20,30 @@ class Language:
     def __init__(self):
         self.lm = GtkSource.LanguageManager()
 
-    def change_language(self, name, sourceview):
+    def change_language(self, combobox, sourceview):
+        """
+
+        :param sourceview: GtkSource.View widget
+        :param combobox: Gtk.Combobox widget
+        :return: None
+        """
+        name = Language.get_language_name(combobox)
         sourceview.get_buffer().set_language(self.lm.get_language(name))
         print("previous language =>", sourceview.language)
         sourceview.language = name
         print("current language =>", sourceview.language)
 
     @staticmethod
-    def get_language_index(language):
+    def get_language_name(combobox):
+        """
+
+        :param combobox: Gtk.Combobox
+        :return: lang: (str) a language id to be fed into GtkSource.LanguageManager().get_language()
+        """
         lm = GtkSource.LanguageManager().get_language_ids()
         lm.sort()
-        print(language)
-        return lm.index(language)
+
+        index = combobox.get_active()
+        lang = lm[index]
+
+        return lang

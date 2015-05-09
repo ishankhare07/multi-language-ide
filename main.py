@@ -5,7 +5,7 @@ from gui.bind import directory_tree, footer
 GObject.type_register(GtkSource.View)
 
 
-class Tabs(footer.Footer):
+class Tabs(footer.Footer, Gtk.Grid):
     """
         handles the addition and deletion of tabs in the notebook
     """
@@ -15,25 +15,30 @@ class Tabs(footer.Footer):
     def __init__(self):
         """
             some stuff
-        :return:
+        :return: Gtk.Grid that can be packed directly into a tab
         """
         footer.Footer.__init__(self)
+        Gtk.Grid.__init__(self)
         self.code = GtkSource.View()
         self.code.language = 'c'
         self.input = Gtk.TextView()
         self.output = Gtk.TextView()
-        self.language = self.combobox
 
         # replace GtkSource buffer
         # and add customization
         self.custom_buffer()
         Tabs.page_count += 1
 
-    def set_expand(self, widget):
+        # pack everything into self (Gtk.Grid)
+        self.get_packed()
+
+    @staticmethod
+    def set_expand(widget):
         widget.set_hexpand(True)
         widget.set_vexpand(True)
 
-    def wrap_scrolled(self, widget):
+    @staticmethod
+    def wrap_scrolled(widget):
         sw = Gtk.ScrolledWindow()
         sw.add(widget)
         return sw
@@ -47,7 +52,7 @@ class Tabs(footer.Footer):
 
         # expanding widgets
         for widget in [self.code, self.input, self.output]:
-            self.set_expand(widget)
+            Tabs.set_expand(widget)
         self.code.set_auto_indent(True)
         self.code.set_highlight_current_line(True)
         self.code.set_indent_on_tab(True)
@@ -59,25 +64,39 @@ class Tabs(footer.Footer):
         self.output.set_editable(False)
 
     def get_packed(self):
-        grid = Gtk.Grid()
-        grid.set_column_spacing(5)
+        """
+        this method packs all the widget a single tab has
+        into self (this instance) i.e. the grid instance
+        :return: None
+        """
+        self.set_column_spacing(5)
 
         # attach editor widget
-        grid.attach(self.wrap_scrolled(self.code), 0, 0, 2, 2)
+        self.attach(Tabs.wrap_scrolled(self.code), 0, 0, 2, 2)
 
         # set 'input' and 'output' labels
-        grid.attach(Gtk.Label('Input'), 0, 2, 1, 1)
-        grid.attach(Gtk.Label('Output'), 1, 2, 1, 1)
+        self.attach(Gtk.Label('Input'), 0, 2, 1, 1)
+        self.attach(Gtk.Label('Output'), 1, 2, 1, 1)
 
         # attach input and output textviews
-        grid.attach(self.wrap_scrolled(self.input), 0, 3, 1, 2)
-        grid.attach(self.wrap_scrolled(self.output), 1, 3, 1, 2)
+        self.attach(Tabs.wrap_scrolled(self.input), 0, 3, 1, 2)
+        self.attach(Tabs.wrap_scrolled(self.output), 1, 3, 1, 2)
 
-        #attach combobox language selector
-        grid.attach(self.language, 1, 5, 1, 1)
-        return grid
+        # attach combobox language selector
+        self.attach(self.combobox, 1, 5, 1, 1)
+
+        # attach combobox changing event
+        self.combobox.connect('changed',
+                              core.Language().change_language, self.code)
 
     def get_label_widget(self):
+        """
+        this method returns a widget to be used as a label for each tab
+        it also contains a close button which is connected to a function
+        in the Main class
+        :return: Gtk.HBox: directly packable into tab-label after connecting
+                            close button
+        """
         box = Gtk.HBox()
         label = Gtk.Label("Page" + str(Tabs.page_count))
         close_button = Gtk.Button()
@@ -93,21 +112,19 @@ class Tabs(footer.Footer):
 
         return box
 
+
 class Main(core.Compile, Gtk.Notebook, core.Language):
-    def __init__(self, builder):
+    def __init__(self, build):
         core.Compile.__init__(self)
         core.Language.__init__(self)
         Gtk.Notebook.__init__(self)
         self.notebook = Gtk.Notebook()
         self.footer = footer.Footer()
-        self.builder = builder
+        self.builder = build
         self.filename = ""
 
         # add notebook to window()
         self.builder.get_object('notebook_holder').pack_end(self.notebook, True, True, 0)
-
-        # hear for page-switch
-        self.notebook.connect('switch-page', self.page_changed)
 
         # add first tab
         self.notebook.append_page(*self.create_tab())
@@ -118,41 +135,39 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         treeview = dir_tree.create_tree_view()
         file_container.pack_start(treeview, True, True, 0)
 
-    def page_changed(self, widget, page, page_num):
-        # page_num1 = self.notebook.get_current_page()
-        grid = self.notebook.get_nth_page(page_num)
-        sourceview = grid.get_child_at(0, 0).get_child()
-        lang = core.Language.get_language_index(sourceview.language)
-
-
     def create_tab(self):
+        """
+        this method is called by self.new_tab, which triggers on-click on new button
+        creates a new tab
+        get grid (Tabs()) from Tabs class
+        fetches a label widget from Tabs.get_label_widget
+        connects the close button in every tab
+        :return: grid to be packed in tab body and label_widget to be set as tab title
+        """
         tab = Tabs()
-        packed = tab.get_packed()
         label_widget = tab.get_label_widget()
 
         # connect label_widget's close button to close_tab()
         label_widget.get_children()[-1].connect('clicked', self.close_tab)
         label_widget.show_all()
 
-        return packed, label_widget
+        return tab, label_widget
 
     def close_tab(self, widget):
+        """
+        this method listens to the close button of each tab in the notebook
+        :param widget: Gtk.Widget
+        :return: None
+        """
         page_num = self.notebook.get_current_page()
         self.notebook.remove_page(page_num)
 
-    def trigger_language_update(self, combobox):
-        index = combobox.get_active()
-        model = combobox.get_model()
-        lang = model[index][0]
-        print("trigger =>", lang)
-
-        page_num = self.notebook.get_current_page()
-        grid = self.notebook.get_nth_page(page_num)
-        # get scrolledwindow at 0,0 and then get sourceview from inside it
-        sourceview = grid.get_child_at(0, 0).get_child()
-        self.change_language(lang, sourceview)
-
     def new_tab(self, widget):
+        """
+        this method is called by the "new button" as specified in the glade xml file
+        :param widget: Gtk.Widget or Gtk.Button
+        :return: None
+        """
         print('new tab added')
         self.notebook.append_page(*self.create_tab())
         self.notebook.show_all()
