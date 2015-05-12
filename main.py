@@ -23,7 +23,7 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         file_container = self.builder.get_object('files')
         dir_tree = directory_tree.Tree()
         treeview = dir_tree.create_tree_view()
-        file_container.pack_start(treeview, True, True, 0)
+        file_container.pack_start(Tabs.wrap_scrolled(treeview), True, True, 0)
 
     def create_tab(self):
         """
