@@ -15,7 +15,7 @@ class Tree:
             parses the nested dictionary and builds the treestore model
         """
 
-        for key, value in dir_tree.items():
+        for key, value in sorted(dir_tree.items()):
             if isinstance(value, dict):                         #is a directory
                 print('found parent')
                 parent = self.treestore.append(parent,[key])    #append directory to tree and store back treeiter
