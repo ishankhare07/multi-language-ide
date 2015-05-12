@@ -1,7 +1,10 @@
 from gi.repository import Gtk
-import dir_core
+from core import dir_core
 
 class Tree:
+    """
+        creates the TreeView to be attached into the gui
+    """
     def __init__(self, directory=None):
         self.dir_tree = dir_core.Directory(directory).childs
         self.treestore = Gtk.TreeStore(str)
@@ -12,7 +15,7 @@ class Tree:
             parses the nested dictionary and builds the treestore model
         """
 
-        for key, value in dir_tree.items():
+        for key, value in sorted(dir_tree.items()):
             if isinstance(value, dict):                         #is a directory
                 print('found parent')
                 parent = self.treestore.append(parent,[key])    #append directory to tree and store back treeiter
@@ -36,6 +39,6 @@ class Tree:
 
         crt = Gtk.CellRendererText()                            #create text-cell-renderer for treeview
         tvc.pack_start(crt, True)                               #pack cell renderer into that particular treeviewcolumn
-        tvc.add_attribute(crt, "text", 0)                        #get text attribute of 1st column(0th index) from the model
+        tvc.add_attribute(crt, "text", 0)                       #get text attribute of 1st column(0th index) from the model
 
         return self.treeview

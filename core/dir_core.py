@@ -12,7 +12,7 @@ class Directory:
             is equivalent to:
             Directory(None)
         effect:
-            creates a 'childs' attribute(self.childs), which can be accessed by
+            creates a 'childs' attribute (self.childs), which can be accessed by
             dir = Directory()
             dir.childs
         childs:
@@ -27,14 +27,16 @@ class Directory:
             self.parent = os.getcwd()
         else:
             self.parent = parent
-        self.indent = indent                        #for printing on the console
+        self.indent = indent                        # for printing on the console
         self.dir_list = os.listdir(self.parent)
+        self.dir_list.sort()
 
         for node in self.dir_list:
             if os.path.isfile(self.parent + '/' + node):
-                print("\t" * self.indent + "file " + node)  #indent for printing on console, shows nested nature
-                self.childs[node] = 'file'                  #adding the files under the current directory
+                print("\t" * self.indent + "file " + node)  # indent for printing on console, shows nested nature
+                self.childs[node] = 'file'                  # adding the files under the current directory
             else:
                 print("\t" * self.indent + "dir " + node)
-                return_obj = Directory(parent=self.parent + '/' + node, indent=self.indent+1)   #save the new Directory object(depicts a nested directory)
-                self.childs[node] = return_obj.childs       #add the nested dictionary to the parent dictionary
+                return_obj = Directory(parent=self.parent + '/' + node,         # save the new Directory object
+                                       indent=self.indent+1)                    # (depicts a nested directory)
+                self.childs[self.parent] = return_obj.childs       # add the nested dictionary to the parent dictionary
