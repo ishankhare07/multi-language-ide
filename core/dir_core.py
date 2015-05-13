@@ -23,7 +23,7 @@ class Directory:
 
     def __init__(self, parent=None, indent=0):
         self.childs = {}
-        if parent == None:
+        if parent is None:
             self.parent = os.getcwd()
         else:
             self.parent = parent
@@ -39,4 +39,8 @@ class Directory:
                 print("\t" * self.indent + "dir " + node)
                 return_obj = Directory(parent=self.parent + '/' + node,         # save the new Directory object
                                        indent=self.indent+1)                    # (depicts a nested directory)
-                self.childs[self.parent] = return_obj.childs       # add the nested dictionary to the parent dictionary
+                if self.parent in self.childs:
+                    self.childs[self.parent].append(return_obj.childs)
+                else:
+                    self.childs[self.parent] = list(return_obj.childs)    # add the nested dictionary to the
+                    # parent dictionary's list
