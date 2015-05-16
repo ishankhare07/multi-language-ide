@@ -83,6 +83,10 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
         self.combobox.connect('changed',
                               self.change_language, self.code)
 
+        # setting row-spacing
+        self.set_row_spacing(5)
+        self.set_column_spacing(5)
+
     def get_label_widget(self):
         """
         this method returns a widget to be used as a label for each tab
