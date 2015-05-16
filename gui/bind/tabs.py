@@ -1,8 +1,10 @@
 __author__ = 'ishan'
 
-from gi.repository import Gtk, GtkSource
+from gi.repository import Gtk, GtkSource, Gio, GLib
 from . import footer, terminal
+from .file import FileChooser
 import core
+
 
 class Tabs(footer.Footer, Gtk.Grid, core.Language):
     """
@@ -11,20 +13,28 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
 
     page_count = 0
 
-    def __init__(self):
+    def __init__(self, window, type):
         """
-            some stuff
+        creates an entire function new-tab
+        :param window: the Main Window in main.py
+        :param type: action type (create)
         :return: Gtk.Grid that can be packed directly into a tab
         """
+        fc = FileChooser(window, type)
+        response = fc.run()
+
+        if response == Gtk.ResponseType.OK:
+            print("File Selected : %s" % fc.get_filename())
+        self.filename = fc.get_filename()
+        fc.close()
         footer.Footer.__init__(self)
         Gtk.Grid.__init__(self)
         core.Language.__init__(self)
         self.code = GtkSource.View()
-        self.code.language = 'c'
+        self.language = None
         self.terminal = terminal.Terminal()
 
-        # replace GtkSource buffer
-        # and add customization
+        # add customization
         self.customize()
         Tabs.page_count += 1
 
@@ -81,11 +91,25 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
 
         # attach combobox changing event
         self.combobox.connect('changed',
-                              self.change_language, self.code)
+                              self.change_language_from_combobox, self.code)
 
         # setting row-spacing
         self.set_row_spacing(5)
         self.set_column_spacing(5)
+
+        # load buffer and perform further stuff
+        self.load_buffer()
+
+    def load_buffer(self):
+        # open file
+        text = open(self.filename, 'r').read()
+        buffer = self.code.get_buffer()
+        buffer.insert_at_cursor(text, len(text))
+        buffer.set_modified(True)
+
+        # set current combobox language
+        self.language = self.set_language_with_file(self.combobox, self.code, self.filename)
+
 
     def get_label_widget(self):
         """
@@ -96,7 +120,9 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
                             close button
         """
         box = Gtk.HBox()
-        label = Gtk.Label("Page" + str(Tabs.page_count))
+        starting_index = self.filename[::-1].find('/')
+        self.custom_name = self.filename[-starting_index:]
+        label = Gtk.Label(self.custom_name)
         close_button = Gtk.Button()
         close_icon = Gtk.Image()
         # set icon type, size

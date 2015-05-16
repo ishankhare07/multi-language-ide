@@ -3,6 +3,36 @@ import core
 from gui.bind import directory_tree, Tabs, footer
 
 
+class FileChooser:
+    def __init__(self, parent, action, title='Choose a File'):
+        if action is "choose":
+            action = Gtk.FileChooserAction.OPEN
+        elif action is "create":
+            action = Gtk.FileChooserAction.SAVE
+        elif action is "folder":
+            action = Gtk.FileChooserAction.CREATE_FOLDER
+        self.fc = Gtk.FileChooserDialog(title,
+                                        parent,
+                                        action,
+                                        buttons=(
+                                            Gtk.STOCK_CANCEL,
+                                            Gtk.ResponseType.CANCEL,
+                                            Gtk.STOCK_OPEN,
+                                            Gtk.ResponseType.OK))
+        self.fc.set_transient_for(parent)
+
+    def on_close(self,):
+        print('closing')
+        self.fc.destroy()
+
+    def run(self):
+        response = self.fc.run()
+        return response
+
+    def get_filename(self):
+        return self.fc.get_filename()
+
+
 class Main(core.Compile, Gtk.Notebook, core.Language):
     def __init__(self, build):
         core.Compile.__init__(self)
@@ -17,7 +47,7 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         self.builder.get_object('notebook_holder').pack_end(self.notebook, True, True, 0)
 
         # add first tab
-        self.notebook.append_page(*self.create_tab())
+        # self.notebook.append_page(*self.create_tab())
 
         # initialize the directory tree on cwd
         file_container = self.builder.get_object('files')
@@ -25,16 +55,17 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         treeview = dir_tree.create_tree_view()
         file_container.pack_start(Tabs.wrap_scrolled(treeview), True, True, 0)
 
-    def create_tab(self):
+    def create_tab(self, type):
         """
         this method is called by self.new_tab, which triggers on-click on new button
         creates a new tab
         get grid (Tabs()) from Tabs class
         fetches a label widget from Tabs.get_label_widget
         connects the close button in every tab
+        :param type: type of action to choose for filechooser dialog
         :return: grid to be packed in tab body and label_widget to be set as tab title
         """
-        tab = Tabs()
+        tab = Tabs(self.builder.get_object('window1'), type)
         label_widget = tab.get_label_widget()
 
         # connect label_widget's close button to close_tab()
@@ -59,7 +90,7 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         :return: None
         """
         print('new tab added')
-        self.notebook.append_page(*self.create_tab())
+        self.notebook.append_page(*self.create_tab('create'))
         self.notebook.show_all()
 
     def on_destroy(self, *args):
