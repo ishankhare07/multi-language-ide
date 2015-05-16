@@ -37,6 +37,11 @@ THE SOFTWARE.
     <property name="can_focus">False</property>
     <property name="stock">gtk-open</property>
   </object>
+  <object class="GtkImage" id="save_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-save</property>
+  </object>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>
     <property name="default_width">1024</property>
@@ -66,6 +71,7 @@ THE SOFTWARE.
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -95,6 +101,7 @@ THE SOFTWARE.
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">2</property>
               </packing>
             </child>
@@ -102,6 +109,7 @@ THE SOFTWARE.
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">5</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -121,7 +129,7 @@ THE SOFTWARE.
                 </child>
               </object>
               <packing>
-                <property name="resize">False</property>
+                <property name="resize">True</property>
                 <property name="shrink">True</property>
               </packing>
             </child>
@@ -155,7 +163,7 @@ THE SOFTWARE.
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="padding">7</property>
+                        <property name="padding">5</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -166,51 +174,13 @@ THE SOFTWARE.
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
+                    <property name="padding">10</property>
                     <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="box5">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkButton" id="compile">
-                        <property name="label" translatable="yes">Compile</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="yalign">0.47999998927116394</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="run">
-                        <property name="label" translatable="yes">Run</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
               <packing>
-                <property name="resize">False</property>
+                <property name="resize">True</property>
                 <property name="shrink">True</property>
               </packing>
             </child>
@@ -223,10 +193,5 @@ THE SOFTWARE.
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="save_image">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-save</property>
   </object>
 </interface>
