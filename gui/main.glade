@@ -27,6 +27,11 @@ THE SOFTWARE.
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <!-- interface-license-type mit -->
+  <object class="GtkImage" id="hide_image">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">format-justify-fill</property>
+  </object>
   <object class="GtkImage" id="new_image">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -60,6 +65,22 @@ THE SOFTWARE.
             <property name="margin_bottom">5</property>
             <property name="spacing">5</property>
             <child>
+              <object class="GtkButton" id="hide">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">hide_image</property>
+                <property name="relief">half</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">10</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkButton" id="new">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -71,8 +92,8 @@ THE SOFTWARE.
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">10</property>
-                <property name="position">0</property>
+                <property name="padding">5</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -83,11 +104,13 @@ THE SOFTWARE.
                 <property name="receives_default">True</property>
                 <property name="image">open</property>
                 <property name="always_show_image">True</property>
+                <signal name="clicked" handler="new_tab" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="padding">5</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -97,13 +120,17 @@ THE SOFTWARE.
                 <property name="receives_default">True</property>
                 <property name="image">save_image</property>
                 <property name="always_show_image">True</property>
+                <signal name="clicked" handler="on_save_button_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">10</property>
-                <property name="position">2</property>
+                <property name="padding">5</property>
+                <property name="position">3</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -143,29 +170,7 @@ THE SOFTWARE.
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkBox" id="box4">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkButton" id="options">
-                            <property name="label" translatable="yes">Hide</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">5</property>
-                        <property name="position">0</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>

@@ -4,6 +4,7 @@ from gi.repository import Gtk, GtkSource, Gio, GLib
 from . import footer, terminal
 from .file import FileChooser
 import core
+import os
 
 
 class Tabs(footer.Footer, Gtk.Grid, core.Language):
@@ -13,14 +14,14 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
 
     page_count = 0
 
-    def __init__(self, window, type):
+    def __init__(self, window, method):
         """
         creates an entire function new-tab
         :param window: the Main Window in main.py
-        :param type: action type (create)
+        :param method: action type (create)
         :return: Gtk.Grid that can be packed directly into a tab
         """
-        fc = FileChooser(window, type)
+        fc = FileChooser(window, method)
         response = fc.run()
 
         if response == Gtk.ResponseType.OK:
@@ -102,6 +103,9 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
 
     def load_buffer(self):
         # open file
+        if not os.path.exists(self.filename):
+            f = open(self.filename, 'w')
+            f.close()
         text = open(self.filename, 'r').read()
         buffer = self.code.get_buffer()
         buffer.insert_at_cursor(text, len(text))
@@ -135,3 +139,11 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
         box.pack_start(close_button, True, True, 0)
 
         return box
+
+    def save(self):
+        text_buffer = self.code.get_buffer()
+        text = text_buffer.get_text(*text_buffer.get_bounds(), include_hidden_chars=True)
+        save_file = open(self.filename, 'wb')
+        save_file.write(text.encode('utf-8'))
+        save_file.close()
+

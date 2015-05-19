@@ -3,36 +3,6 @@ import core
 from gui.bind import directory_tree, Tabs, footer
 
 
-class FileChooser:
-    def __init__(self, parent, action, title='Choose a File'):
-        if action is "choose":
-            action = Gtk.FileChooserAction.OPEN
-        elif action is "create":
-            action = Gtk.FileChooserAction.SAVE
-        elif action is "folder":
-            action = Gtk.FileChooserAction.CREATE_FOLDER
-        self.fc = Gtk.FileChooserDialog(title,
-                                        parent,
-                                        action,
-                                        buttons=(
-                                            Gtk.STOCK_CANCEL,
-                                            Gtk.ResponseType.CANCEL,
-                                            Gtk.STOCK_OPEN,
-                                            Gtk.ResponseType.OK))
-        self.fc.set_transient_for(parent)
-
-    def on_close(self,):
-        print('closing')
-        self.fc.destroy()
-
-    def run(self):
-        response = self.fc.run()
-        return response
-
-    def get_filename(self):
-        return self.fc.get_filename()
-
-
 class Main(core.Compile, Gtk.Notebook, core.Language):
     def __init__(self, build):
         core.Compile.__init__(self)
@@ -55,6 +25,9 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         treeview = dir_tree.create_tree_view()
         file_container.pack_start(Tabs.wrap_scrolled(treeview), True, True, 0)
 
+        # disable save button (no tab opened yet)
+        self.builder.get_object('save').set_sensitive(False)
+
     def create_tab(self, type):
         """
         this method is called by self.new_tab, which triggers on-click on new button
@@ -71,6 +44,11 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         # connect label_widget's close button to close_tab()
         label_widget.get_children()[-1].connect('clicked', self.close_tab)
         label_widget.show_all()
+
+        # set save button active if not
+        button = self.builder.get_object('save')
+        if not button.get_sensitive():
+            button.set_sensitive(True)
 
         return tab, label_widget
 
@@ -90,8 +68,27 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         :return: None
         """
         print('new tab added')
-        self.notebook.append_page(*self.create_tab('create'))
+        name = Gtk.Buildable.get_name(widget)
+        if name == 'new':
+            param = 'create'
+        elif name == 'button_open':
+            param = 'open'
+        else:
+            param = 'create'
+        self.notebook.append_page(*self.create_tab(param))
         self.notebook.show_all()
+
+    def on_save_button_clicked(self, widget):
+        """
+        this method saves the text in source view of the current active tab
+        into a file referred by self.filename of the current active tab
+        :param widget: Gtk.Widget or Gtk.Button
+        :return: None
+        """
+
+        active_index = self.notebook.get_current_page()
+        active_page = self.notebook.get_nth_page(active_index)
+        active_page.save()
 
     def on_destroy(self, *args):
         Gtk.main_quit(*args)
