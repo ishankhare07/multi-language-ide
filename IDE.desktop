@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=IDE
+Exec=bash /home/ishan/Desktop/multi-language-ide/ide.sh
+Icon=/home/ishan/Desktop/multi-language-ide/main.png
+Type=Application
+Terminal=false
