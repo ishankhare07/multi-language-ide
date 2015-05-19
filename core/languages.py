@@ -5,9 +5,9 @@ GObject.type_register(GtkSource.View)
 
 class Language:
     compilers = {
-        'c': ['gcc', '.c'],
-        'cpp': ['g++', '.cpp'],
-        'java': ['javac', '.java']
+        'c': ['gcc', './'],
+        'cpp': ['g++', './'],
+        'java': ['javac', 'java']
     }
 
     interpreters = {
@@ -30,7 +30,7 @@ class Language:
         name = Language.get_language_name(combobox)
         sourceview.get_buffer().set_language(self.lm.get_language(name))
         # print("previous language =>", sourceview.language)
-        sourceview.language = name
+        self.language = name
         # print("current language =>", sourceview.language)
 
     def set_language_with_file(self, combobox, sourceview, filename):
@@ -39,7 +39,7 @@ class Language:
         :param combobox: Gtk.Combobox language selector which is to be set
         :param sourceview: GtkSource.View on which the language is to be set
         :param language: Str, name of language
-        :return: name of language
+        :return: Str, name of language
         """
         language = self.lm.guess_language(filename, None)
         lm_list = self.lm.get_language_ids()
@@ -53,7 +53,7 @@ class Language:
         # setting language in sourceview
         sourceview.get_buffer().set_language(language)
 
-        return language
+        return language.get_id()
 
     @staticmethod
     def get_language_name(combobox):

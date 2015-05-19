@@ -3,9 +3,8 @@ import core
 from gui.bind import directory_tree, Tabs, footer
 
 
-class Main(core.Compile, Gtk.Notebook, core.Language):
+class Main(Gtk.Notebook, core.Language):
     def __init__(self, build):
-        core.Compile.__init__(self)
         core.Language.__init__(self)
         Gtk.Notebook.__init__(self)
         self.notebook = Gtk.Notebook()
@@ -109,6 +108,15 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         """
         active_tab = self.get_active_tab()
         active_tab.toggle_revealer()
+
+    def on_run_clicked(self, button):
+        """
+
+        :param button: Gtk.Widget or Gtk.Button
+        :return: None
+        """
+        active_tab = self.get_active_tab()
+        active_tab.execute()
 
 
 builder = Gtk.Builder()

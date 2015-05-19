@@ -3,6 +3,7 @@ __author__ = 'ishan'
 from gi.repository import Gtk, GtkSource, Gio, GLib
 from . import footer, terminal
 from .file import FileChooser
+from core.compile import Compile
 import core
 import os
 
@@ -163,3 +164,8 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
         else:
             self.revealer.set_reveal_child(True)
             Tabs.set_expand(self.revealer, True)
+
+    def execute(self):
+        if not self.revealer.get_reveal_child():
+            self.toggle_revealer()
+        Compile(self.language, self.filename, self.terminal)
