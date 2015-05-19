@@ -46,8 +46,9 @@ class Language:
         lm_list.sort()
 
         # setting language in combobox
-        index = lm_list.index(language.get_id())
-        combobox.set_active(index)
+        if language:
+            index = lm_list.index(language.get_id())
+            combobox.set_active(index)
 
         # setting language in sourceview
         sourceview.get_buffer().set_language(language)
