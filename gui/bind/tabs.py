@@ -34,6 +34,8 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
         self.code = GtkSource.View()
         self.language = None
         self.terminal = terminal.Terminal()
+        self.revealer = Gtk.Revealer()
+        self.revealer.set_reveal_child(True)
 
         # add customization
         self.customize()
@@ -43,9 +45,9 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
         self.get_packed()
 
     @staticmethod
-    def set_expand(widget):
-        widget.set_hexpand(True)
-        widget.set_vexpand(True)
+    def set_expand(widget, value):
+        widget.set_hexpand(value)
+        widget.set_vexpand(value)
 
     @staticmethod
     def wrap_scrolled(widget):
@@ -62,8 +64,8 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
         self.code.set_buffer(GtkSource.Buffer())
 
         # expanding widgets
-        for widget in [self.code, self.terminal]:
-            Tabs.set_expand(widget)
+        for widget in [self.code, self.revealer]:
+            Tabs.set_expand(widget, True)
         self.code.set_auto_indent(True)
         self.code.set_highlight_current_line(True)
         self.code.set_indent_on_tab(True)
@@ -84,8 +86,11 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
         # attach editor widget
         self.attach(Tabs.wrap_scrolled(self.code), 0, 0, 2, 2)
 
-        # attach the virtual terminal widget
-        self.attach(Tabs.wrap_scrolled(self.terminal), 0, 2, 2, 2)
+        # pack terminal inside revealer
+        self.revealer.add(Tabs.wrap_scrolled(self.terminal))
+
+        # attach the revealer widget
+        self.attach(self.revealer, 0, 2, 2, 2)
 
         # attach combobox language selector
         self.attach(self.combobox, 1, 4, 1, 1)
@@ -114,7 +119,6 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
         # set current combobox language
         self.language = self.set_language_with_file(self.combobox, self.code, self.filename)
 
-
     def get_label_widget(self):
         """
         this method returns a widget to be used as a label for each tab
@@ -141,9 +145,21 @@ class Tabs(footer.Footer, Gtk.Grid, core.Language):
         return box
 
     def save(self):
+        """
+        this method saves the current buffer text into the file specified by
+        self.filename
+        :return: None
+        """
         text_buffer = self.code.get_buffer()
         text = text_buffer.get_text(*text_buffer.get_bounds(), include_hidden_chars=True)
         save_file = open(self.filename, 'wb')
         save_file.write(text.encode('utf-8'))
         save_file.close()
 
+    def toggle_revealer(self):
+        if self.revealer.get_reveal_child():
+            self.revealer.set_reveal_child(False)
+            Tabs.set_expand(self.revealer, False)
+        else:
+            self.revealer.set_reveal_child(True)
+            Tabs.set_expand(self.revealer, True)

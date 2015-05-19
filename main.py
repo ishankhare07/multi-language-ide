@@ -25,8 +25,10 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         treeview = dir_tree.create_tree_view()
         file_container.pack_start(Tabs.wrap_scrolled(treeview), True, True, 0)
 
-        # disable save button (no tab opened yet)
+        # disable save, run, terminal button (no tab opened yet)
         self.builder.get_object('save').set_sensitive(False)
+        self.builder.get_object('run').set_sensitive(False)
+        self.builder.get_object('terminal').set_sensitive(False)
 
     def create_tab(self, type):
         """
@@ -45,9 +47,12 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         label_widget.get_children()[-1].connect('clicked', self.close_tab)
         label_widget.show_all()
 
-        # set save button active if not
-        button = self.builder.get_object('save')
-        if not button.get_sensitive():
+        # set save, run, terminal button active if not
+        save_button = self.builder.get_object('save')
+        run_button = self.builder.get_object('run')
+        terminal_button = self.builder.get_object('terminal')
+
+        for button in [save_button, run_button, terminal_button]:
             button.set_sensitive(True)
 
         return tab, label_widget
@@ -85,13 +90,25 @@ class Main(core.Compile, Gtk.Notebook, core.Language):
         :param widget: Gtk.Widget or Gtk.Button
         :return: None
         """
-
-        active_index = self.notebook.get_current_page()
-        active_page = self.notebook.get_nth_page(active_index)
+        active_page = self.get_active_tab()
         active_page.save()
 
     def on_destroy(self, *args):
         Gtk.main_quit(*args)
+
+    def get_active_tab(self):
+        active_index = self.notebook.get_current_page()
+        active_page = self.notebook.get_nth_page(active_index)
+        return active_page
+
+    def on_term_clicked(self, button):
+        """
+        toggles the revealer for terminal
+        :param button: Gtk.Widget or Gtk.Button
+        :return: none
+        """
+        active_tab = self.get_active_tab()
+        active_tab.toggle_revealer()
 
 
 builder = Gtk.Builder()
