@@ -116,6 +116,7 @@ class Main(Gtk.Notebook, core.Language):
         :return: None
         """
         active_tab = self.get_active_tab()
+        active_tab.save()                       # enables auto-save before running
         active_tab.execute()
 
 
