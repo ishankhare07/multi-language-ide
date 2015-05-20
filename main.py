@@ -1,6 +1,8 @@
 from gi.repository import Gtk
-import core
 from gui.bind import directory_tree, Tabs, footer
+import core
+import time
+import threading
 
 
 class Main(Gtk.Notebook, core.Language):
@@ -111,7 +113,7 @@ class Main(Gtk.Notebook, core.Language):
 
     def on_run_clicked(self, button):
         """
-
+        this handles the run function
         :param button: Gtk.Widget or Gtk.Button
         :return: None
         """
@@ -119,6 +121,24 @@ class Main(Gtk.Notebook, core.Language):
         active_tab.save()                       # enables auto-save before running
         active_tab.execute()
 
+    def hide(self):
+        paned = self.builder.get_object('paned1')
+        pos = paned.get_position()
+        if pos > 0:
+            while pos >= 0:
+                paned.set_position(pos)
+                time.sleep(0.005)
+                pos -= 1
+        else:
+            pos = 0
+            while pos <= 200:
+                paned.set_position(pos)
+                time.sleep(.005)
+                pos += 1
+
+    def on_hide_clicked(self, button):
+        t = threading.Thread(target=self.hide)
+        t.start()
 
 builder = Gtk.Builder()
 builder.add_from_file('gui/main.glade')

@@ -88,6 +88,7 @@ THE SOFTWARE.
                 <property name="image">hide_image</property>
                 <property name="relief">half</property>
                 <property name="always_show_image">True</property>
+                <signal name="clicked" handler="on_hide_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
