@@ -53,7 +53,10 @@ class Language:
         # setting language in sourceview
         sourceview.get_buffer().set_language(language)
 
-        return language.get_id()
+        if language is not None:
+            return language.get_id()
+        else:
+            return None
 
     @staticmethod
     def get_language_name(combobox):
