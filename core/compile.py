@@ -30,7 +30,8 @@ class Compile:
             self.handle_interpreted(run_command, terminal)
 
         else:
-            print('language definition not supported')
+            msg = 'language definition not supported'
+            terminal.feed_child(msg, len(msg))
 
     def handle_compiled(self, language, compile_command, run_command, terminal):
         """
