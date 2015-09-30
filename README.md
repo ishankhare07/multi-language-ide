@@ -1,7 +1,8 @@
 IDE
 ========
 
-A python and GTK+ - 3.0 based IDE for 8 languages  
+A python and GTK+ - 3.0 based IDE for 8 languages
+
 1. c
 2. c++
 3. java
