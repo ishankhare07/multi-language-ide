@@ -14,7 +14,8 @@ class Language:
         'python': ['python', '.py'],
         'python3': ['python3', '.py'],
         'ruby': ['ruby', '.rb'],
-        'perl': ['perl', '.pl']
+        'perl': ['perl', '.pl'],
+        'go': ['go run', '.go']
     }
 
     def __init__(self):
